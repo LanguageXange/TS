@@ -357,3 +357,47 @@ export class Sync<T extends HasId>
 ```
 
 ## Connecting Sync Back to User
+
+06-08-log continue from 'Optional properties'
+
+problem: in Sync.ts we specify that Sync extends HasID interface
+however, in User.ts we pass in the UserProps generics is using
+optional properties
+
+```
+export interface UserProps {
+  name?: string;
+  age?: number;
+  id?: number;
+}
+```
+
+simply do this - make id optional in HasId
+
+```
+interface HasId {
+  id?: number;
+}
+```
+
+`tsc --init` to generate a tsconfig.json file
+
+you will see that
+
+```
+/* Strict Type-Checking Options */
+"strict": true,
+
+```
+
+now go back to Sync.ts
+and hover
+
+```
+ const id = data.id;
+```
+
+you will see (id: number | undefined)
+which is a better representation of optional properties
+
+06-09-log: continue from 'extracting an attribute class'
