@@ -401,3 +401,53 @@ you will see (id: number | undefined)
 which is a better representation of optional properties
 
 06-09-log: continue from 'extracting an attribute class'
+
+create Attribute.ts
+
+get and set methods move to Attribute
+and make Attribute generic as well
+
+```
+get(propName: string): number | string | boolean {
+    return this.data[propName];
+  }
+
+  get method shortcoming -> need to use typeof to make sure the outcome
+  is what we want
+```
+
+## Two important rules
+
+1. in typescript, string can be types
+
+type BestName = 'booo'
+
+2. All object keys are strings
+
+## advanced generic constraint
+
+```
+import { UserProps } from "./User";
+export class Attribute<T> {
+  constructor(private data: T) {}
+
+  // set up generic constraints
+  get<K extends keyof T>(key: K): T[K] {
+    return this.data[key];
+  }
+  set(update: T): void {
+    Object.assign(this.data, update);
+  }
+}
+
+const attrs = new Attribute<UserProps>({
+  id: 5,
+  age: 20,
+  name: "what",
+});
+
+const name = attrs.get("name");
+
+```
+
+06-10-log: continue from integrating attribute
