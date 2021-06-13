@@ -451,3 +451,109 @@ const name = attrs.get("name");
 ```
 
 06-10-log: continue from integrating attribute
+
+instead of writing this
+
+```
+  public attribute: Attribute<UserProps> = new Attribute<UserProps>()
+```
+
+write this
+because Attribute class is expecting an argument
+
+```
+public attribute: Attribute<UserProps>;
+constructor(attrs:UserProps){
+  this.attribute = new Attribute<UserProps>(attrs)
+}
+
+```
+
+## Composition is delegation
+
+Some methods need coordination between different modules in user
+
+set(), fetch(), save() methods require both class Attribute and class Sync
+
+// accessors - e.g. use the get keyword so that we don't need the parenthesis
+
+## Passthrough Methods
+
+get, on, trigger
+
+```
+  //  accessor
+  get on() {
+    // we are not calling the function but simply return a reference to the events.on method
+    return this.events.on;
+  }
+
+  get trigger() {
+    return this.events.trigger;
+  }
+
+  get get() {
+    return this.attribute.get;
+  }
+
+
+```
+
+### Context issue - this keyword
+
+```
+//console.log(user.get("name")); // yet we see the error Cannot read property 'name' of undefined
+
+```
+
+We need to update Attribute.ts
+
+```
+//turn this
+  get<K extends keyof T>(key: K): T[K] {
+    return this.data[key];
+  }
+
+
+//into a function
+
+  get = <K extends keyof T>(key: K): T[K] => {
+    return this.data[key];
+  };
+
+  now the 'this' will refer to the class Attribute
+
+```
+
+## Saving data
+
+adding getAll() method inside Attribute.ts
+
+```
+  save():void{
+    this.sync.save(this.attribute.getAll())
+  }
+```
+
+## Composition vs. Inheritance
+
+1. make class User reusable -> create a new class called Model with all the methods that current User has
+
+## Extracting a Model Class
+
+```
+export class User extends Model<UserProps> {
+  static buildUser(attrs: UserProps): User {
+    return new User(
+      new Attribute<UserProps>(attrs),
+      new Eventing(),
+      new APISync<UserProps>(rootURL)
+    );
+  }
+}
+
+```
+
+## User.buildUser({})
+
+06-13-log Continue from 'Shortened Passthrough Methods
