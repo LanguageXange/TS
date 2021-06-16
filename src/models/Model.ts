@@ -27,19 +27,11 @@ export class Model<T extends HasId> {
     private sync: Sync<T>
   ) {}
 
-  //  accessor
-  get on() {
-    // we are not calling the function but simply return a reference to the events.on method
-    return this.events.on;
-  }
+  on = this.events.on;
 
-  get trigger() {
-    return this.events.trigger;
-  }
+  trigger = this.events.trigger;
 
-  get get() {
-    return this.attribute.get;
-  }
+  get = this.attribute.get;
 
   set(update: T): void {
     this.attribute.set(update);

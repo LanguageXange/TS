@@ -557,3 +557,26 @@ export class User extends Model<UserProps> {
 ## User.buildUser({})
 
 06-13-log Continue from 'Shortened Passthrough Methods
+
+**Before**
+
+```
+ get on() {
+    return this.events.on;
+  }
+```
+
+**After**
+
+```
+on = this.events.on;
+```
+
+## Users Collection
+
+GET -> /users -> retrieve all users
+class UserCollection {
+
+}
+
+06-15-log continue from Generic User Collection
