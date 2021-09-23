@@ -580,3 +580,115 @@ class UserCollection {
 }
 
 06-15-log continue from Generic User Collection
+
+```
+  static buldUserCollection(): Collection<User, UserProps> {
+    return new Collection<User, UserProps>(rootURL, (json: UserProps) =>
+      User.buildUser(json)
+    );
+  }
+
+```
+
+### View Classes
+
+- UserEdit
+  | --> UserShow
+  | --> UserForm
+
+06-17-log continue from building the user Form
+
+---
+
+### 09-22-2021 (The day of my google technical phone interview! anyway! Learn TypeScript!!!!)
+
+#### Lecture: Building the User Form
+
+create a new folder - called views
+inside /views, we create a UserForm.ts file
+
+go to index.ts
+
+```
+import { UserForm } from "./views/UserForm";
+
+const userForm = new UserForm(document.getElementById("root"));
+
+userForm.render();
+
+```
+
+and run `parcel index.html`
+
+#### Defining an Events Map & Bind Event Handlers
+
+- How can we bind the event handlers !
+
+e.g.
+
+```
+  eventsMap(): { [key: string]: () => void } {
+    return {
+      "click:button": this.onButtonClick(),
+    };
+  }
+
+```
+
+// https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment
+
+- DocumentFragment interface represents a minimal document object that has no parent
+
+#### Lecture : Binding Events on ClassName
+
+- now we have 2 buttons, we need to add more specificity
+- it will work because we were using querySelectorAll
+
+#### Lecture : Adding Methods to User
+
+- go to User.ts
+- add the function setRandomAge()
+
+```
+  setRandomAge(): void {
+    const age = Math.round(Math.random() * 100);
+    this.set({ age });
+  }
+```
+
+###### super classic error about `this` keyword
+
+```
+  onSetAgeClick(): void {
+    // we've updated the User model to have a setRandomAge method
+    this.model.setRandomAge();
+  }
+
+```
+
+the this doesn't refer to the User model because of the addEventListener function
+
+To fix it we can change it to the arrow function
+
+#### Lecture: Re-rendering on Model Change
+
+- look at the Model.ts
+
+add the code to cause render after we've clicked the button to
+set Random age
+
+```
+  bindModel(): void {
+    this.model.on("change", () => {
+      this.render();
+    });
+  }
+```
+
+#### however, we will notice that every time we click set random age
+
+we create a new form!
+
+To fix it - simply add `this.parent.innerHtml = ''`
+
+#### Continue from Lecture : Reading Input Text!

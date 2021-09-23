@@ -2,17 +2,21 @@
 import axios, { AxiosResponse } from "axios";
 
 import { Eventing } from "./Eventing";
-import { User, UserProps } from "./User";
+// import { User, UserProps } from "./User";
 
 // for now let's build UserCollectioni first
 
-export class Collection {
-  models: User[] = [];
+export class Collection<T, K> {
+  models: T[] = [];
   events: Eventing = new Eventing();
 
   // we can't use shorthand syntax because we
   // initialize the events inline
-  constructor(public rootURL: string) {}
+  constructor(
+    public rootURL: string,
+
+    public deserialize: (json: K) => T
+  ) {}
 
   get on() {
     return this.events.on;
@@ -23,9 +27,9 @@ export class Collection {
 
   fetch(): void {
     axios.get(this.rootURL).then((res: AxiosResponse) => {
-      res.data.forEach((v: UserProps) => {
-        const user = User.buildUser(v);
-        this.models.push(user);
+      res.data.forEach((v: K) => {
+        // const user = T.buildUser(v);
+        this.models.push(this.deserialize(v));
       });
     });
 

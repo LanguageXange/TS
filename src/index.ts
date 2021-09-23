@@ -1,8 +1,16 @@
-import { Collection } from "./models/Collection";
+// import { User } from "./models/User";
 
-const collection = new Collection("http://localhost:3000/users");
-collection.on("change", () => {
-  console.log(collection);
-});
+// const collection = User.buldUserCollection();
+// collection.on("change", () => {
+//   console.log(collection);
+// });
 
-collection.fetch();
+// collection.fetch();
+
+import { User } from "./models/User";
+import { UserForm } from "./views/UserForm";
+
+const user = User.buildUser({ name: "blah", age: 100 });
+const userForm = new UserForm(document.getElementById("root"), user);
+
+userForm.render();
