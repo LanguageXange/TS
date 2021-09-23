@@ -11,6 +11,12 @@ import { User } from "./models/User";
 import { UserForm } from "./views/UserForm";
 
 const user = User.buildUser({ name: "blah", age: 100 });
-const userForm = new UserForm(document.getElementById("root"), user);
 
-userForm.render();
+// since the root element could be null we need to check it first
+const root = document.getElementById("root");
+if (root) {
+  const userForm = new UserForm(root, user);
+  userForm.render();
+} else {
+  throw new Error("root element not found");
+}

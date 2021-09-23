@@ -1,22 +1,15 @@
-import { User } from "../models/User";
-export class UserForm {
-  constructor(public parent: Element, public model: User) {
-    this.bindModel();
-  }
-
-  bindModel(): void {
-    this.model.on("change", () => {
-      this.render();
-    });
-  }
-
+import { View } from "./View";
+import { User, UserProps } from "../models/User";
+export class UserForm extends View<User, UserProps> {
   eventsMap(): { [key: string]: () => void } {
     return {
       "click:button": this.onButtonClick,
       "mouseenter:h1": this.onHoverH1,
       "click:.set-age": this.onSetAgeClick,
+      "click:.set-name": this.onSetNameClick,
     };
   }
+
   onHoverH1(): void {
     console.log("yeah mouseenter h1");
   }
@@ -24,6 +17,14 @@ export class UserForm {
   onButtonClick(): void {
     console.log("click");
   }
+
+  // Why we want arrow function here - so that we don't have to deal with 'this'
+  onSetNameClick = (): void => {
+    //we want to reach the DOM read the input element and the content
+    const input = this.parent.querySelector("input");
+    const name = input?.value;
+    this.model.set({ name });
+  };
   onSetAgeClick = (): void => {
     // we've updated the User model to have a setRandomAge method
     this.model.setRandomAge();
@@ -35,29 +36,9 @@ export class UserForm {
         <p> User Name ${this.model.get("name")}</p>
         <p> User Age ${this.model.get("age")}</p>
         <input/>
-        <button>click me</button>
+        <button class='set-name'>change name</button>
         <button class="set-age">set random age</button>
         </div>
         `;
-  }
-  // DocumentFrament cool
-  bindEvents(fragment: DocumentFragment): void {
-    const eventsMap = this.eventsMap();
-    for (let eventKey in eventsMap) {
-      // split the key in half based on the ":"
-      const [name, selector] = eventKey.split(":"); // click, button
-
-      fragment.querySelectorAll(selector).forEach((ele) => {
-        ele.addEventListener(name, eventsMap[eventKey]);
-      });
-    }
-  }
-
-  render(): void {
-    this.parent.innerHTML = "";
-    const templateElement = document.createElement("template");
-    templateElement.innerHTML = this.template();
-    this.bindEvents(templateElement.content);
-    this.parent.append(templateElement.content);
   }
 }
