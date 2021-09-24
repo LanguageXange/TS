@@ -41,10 +41,13 @@ export abstract class View<T extends Model<K>, K> {
       const selector = regionMaps[key];
       const ele = fragment.querySelector(selector);
       if (ele) {
+        // to check if ele is null
         this.regions[key] = ele;
       }
     }
   }
+
+  onRender(): void {}
 
   render(): void {
     this.parent.innerHTML = "";
@@ -52,6 +55,9 @@ export abstract class View<T extends Model<K>, K> {
     templateElement.innerHTML = this.template();
     this.bindEvents(templateElement.content);
     this.mapRegions(templateElement.content);
+
+    // helper function before elements appended to the dom
+    this.onRender();
     this.parent.append(templateElement.content);
   }
 }

@@ -1,22 +1,55 @@
+// // import { User } from "./models/User";
+
+// // const collection = User.buldUserCollection();
+// // collection.on("change", () => {
+// //   console.log(collection);
+// // });
+
+// // collection.fetch();
+
+// // --------------------------------
 // import { User } from "./models/User";
+// import { UserEdit } from "./views/UserEdit";
+// import { UserForm } from "./views/UserForm";
 
-// const collection = User.buldUserCollection();
-// collection.on("change", () => {
-//   console.log(collection);
-// });
+// const user = User.buildUser({ name: "blah", age: 100 });
 
-// collection.fetch();
+// // since the root element could be null we need to check it first
+// const root = document.getElementById("root");
+// // if (root) {
+// //   const userForm = new UserForm(root, user);
+// //   userForm.render();
+// // } else {
+// //   throw new Error("root element not found");
+// // }
 
-import { User } from "./models/User";
-import { UserForm } from "./views/UserForm";
+// if (root) {
+//   const userEdit = new UserEdit(root, user);
+//   userEdit.render();
+//   console.log(userEdit, "notice the regions property");
+// } else {
+//   throw new Error("not found");
+// }
 
-const user = User.buildUser({ name: "blah", age: 100 });
+// //-------------------------------------------
+// Final Code !! - error fetch data from localhost 3000
+import { Collection } from "./models/Collection";
+import { User, UserProps } from "./models/User";
+import { UserList } from "./views/UserList";
 
-// since the root element could be null we need to check it first
-const root = document.getElementById("root");
-if (root) {
-  const userForm = new UserForm(root, user);
-  userForm.render();
-} else {
-  throw new Error("root element not found");
-}
+const users = new Collection(
+  "http://localhost:3000/users",
+  (json: UserProps) => {
+    return User.buildUser(json);
+  }
+);
+
+users.on("change", () => {
+  console.log("user change!");
+  const root = document.getElementById("root");
+  if (root) {
+    new UserList(root, users).render();
+  }
+});
+
+users.fetch();
