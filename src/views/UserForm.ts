@@ -7,6 +7,7 @@ export class UserForm extends View<User, UserProps> {
       "mouseenter:h1": this.onHoverH1,
       "click:.set-age": this.onSetAgeClick,
       "click:.set-name": this.onSetNameClick,
+      "click:.save-model": this.onSaveClick,
     };
   }
 
@@ -17,7 +18,9 @@ export class UserForm extends View<User, UserProps> {
   onButtonClick(): void {
     console.log("click");
   }
-
+  onSaveClick = (): void => {
+    this.model.save();
+  };
   // Why we want arrow function here - so that we don't have to deal with 'this'
   onSetNameClick = (): void => {
     //we want to reach the DOM read the input element and the content
@@ -32,12 +35,10 @@ export class UserForm extends View<User, UserProps> {
   template(): string {
     return `
         <div>
-        <h1> User Form</h1>
-        <p> User Name ${this.model.get("name")}</p>
-        <p> User Age ${this.model.get("age")}</p>
-        <input/>
+        <input placeholder="${this.model.get("name")}"/>
         <button class='set-name'>change name</button>
         <button class="set-age">set random age</button>
+        <button class="save-model"></button>
         </div>
         `;
   }
